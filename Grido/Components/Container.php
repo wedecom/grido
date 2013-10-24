@@ -27,7 +27,7 @@ use Grido\Components\Columns\Column,
 abstract class Container extends \Nette\Application\UI\Control
 {
     /** @var bool cache */
-    protected $hasColumns, $hasFilters, $hasActions, $hasOperation, $hasExport;
+    protected $hasColumns, $hasFilters, $hasActions, $hasOperation, $hasExport, $hasAggregateFunctions;
 
     /**
      * Returns column component.
@@ -176,6 +176,20 @@ abstract class Container extends \Nette\Application\UI\Control
         }
 
         return $hasExport;
+    }
+
+    /**
+     * Returns aggregated values.
+     * @return array
+     */
+    public function getAggregates()
+    {
+        if ($this->aggregates === NULL) {
+            $container = $this->getComponent(Column::ID, FALSE);
+            $this->aggregates = $this->model->getAggregates($container->getComponents());
+        }
+
+        return $this->aggregates;
     }
 
     /**********************************************************************************************/

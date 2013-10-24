@@ -23,9 +23,11 @@ use Grido\Components\Filters\Filter;
  * @property-read string $sort
  * @property-read \Nette\Utils\Html $cellPrototype
  * @property-read \Nette\Utils\Html $headerPrototype
+ * @property-read string $aggregateFunction
  * @property-write callback $cellCallback
  * @property-write string $defaultSorting
  * @property-write mixed $customRender
+ * @property-write mixed $customAggregateRender
  * @property-write mixed $customRenderExport
  * @property-write array $replacements
  * @property-write bool $sortable
@@ -46,6 +48,9 @@ abstract class Column extends \Grido\Components\Component
     /** @var string */
     protected $column;
 
+    /** @var string */
+    protected $aggregateFunction;
+
     /** @var \Nette\Utils\Html <td> html tag */
     protected $cellPrototype;
 
@@ -57,6 +62,9 @@ abstract class Column extends \Grido\Components\Component
 
     /** @var mixed custom rendering */
     protected $customRender;
+
+    /** @var mixed custom rendering of aggregated value */
+    protected $customAggregateRender;
 
     /** @var mixed custom export rendering */
     protected $customRenderExport;
@@ -141,6 +149,16 @@ abstract class Column extends \Grido\Components\Component
     }
 
     /**
+     * @param mixed $callback|
+     * @return Column
+     */
+    public function setCustomAggregateRender($callback)
+    {
+        $this->customAggregateRender = $callback;
+        return $this;
+    }
+
+    /**
      * @param callback $callback
      * @return Column
      */
@@ -149,6 +167,17 @@ abstract class Column extends \Grido\Components\Component
         $this->cellCallback = $callback;
         return $this;
     }
+
+    public function setAggregateFunction($function)
+    {
+		$this->aggregateFunction = $function;
+		return $this;
+	}
+
+    public function getAggregateFunction()
+    {
+		return $this->aggregateFunction;
+	}
 
     /**********************************************************************************************/
 
@@ -231,6 +260,15 @@ abstract class Column extends \Grido\Components\Component
         return $this->customRender;
     }
 
+    /**
+     * @return mixed
+     * @internal
+     */
+    public function getCustomAggregateRender()
+    {
+        return $this->customRender;
+    }
+
     /**********************************************************************************************/
 
     /**
@@ -262,6 +300,21 @@ abstract class Column extends \Grido\Components\Component
     {
         if (is_callable($this->customRender)) {
             return callback($this->customRender)->invokeArgs(array($row));
+        }
+
+        $value = $this->getValue($row);
+        return $this->formatValue($value);
+    }
+
+    /**
+     * @param mixed $row
+     * @return string
+     * @internal
+     */
+    public function renderAggregate($row)
+    {
+        if (is_callable($this->customAggregateRender)) {
+            return callback($this->customAggregateRender)->invokeArgs(array($row));
         }
 
         $value = $this->getValue($row);

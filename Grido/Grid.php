@@ -94,6 +94,9 @@ class Grid extends Components\Container
     /** @var int total count of items */
     protected $count;
 
+    /** @var array aggregated values for columns */
+    protected $aggregates;
+
     /** @var mixed */
     protected $data;
 
