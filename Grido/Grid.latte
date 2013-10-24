@@ -22,6 +22,8 @@
     $columnCount = count($columns) + ($operation ? 1 : 0);
     $showActionsColumn = $actions || ($filters && $filterRenderType == Grido\Components\Filters\Filter::RENDER_INNER);
 
+    $showAggregates = $control->hasAggregateFunctions();
+
     /* TWITTER BOOTSTRAP 2/3 */
     $buttons = $form->getComponent('buttons');
     $buttons->getComponent('search')->getControlPrototype()->class[] = 'btn btn-default btn-sm search';
@@ -191,6 +193,12 @@
                 </td>
             {!$tr->endTag()}
         {/foreach}
+		<tr n:if="$control->getCount() && $showAggregates" class="aggregates">
+		{? $aggregates = $control->getAggregates(); }
+		{foreach $columns as $column}
+			<td>{if isset($aggregates[$column->column])}{!$column->renderAggregate($aggregates)}{else}-{/if}</td>
+		{/foreach}
+		</tr>
         <tr n:if="!$control->getCount()"><td colspan="{=$showActionsColumn ? $columnCount + 1 : $columnCount}" class="no-results">{_'No results.'}</td></tr>
     </tbody>
 {!$control->getTablePrototype()->endTag()}

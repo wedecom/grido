@@ -96,6 +96,28 @@ class DibiFluent extends \Nette\Object implements IDataSource
     }
 
     /**
+    * Gets aggregated values.
+    *
+    * @param array $columns
+    * @return array
+    */
+	public function getAggregates($columns)
+	{
+		$fluent = clone($this->fluent);
+		$functions = array();
+		foreach ($columns as $column) {
+			if ($column->aggregateFunction !== NULL) {
+				$functions[] = $column->aggregateFunction . '(' . $column->column . ') AS ' . $column->column;
+			}
+		}
+//		echo('SELECT ' . implode(', ', $functions) . ' FROM (' . (string)$this->fluent . ')');
+		$result = (array)$fluent->getConnection()->query(
+			'SELECT ' . implode(', ', $functions) . ' FROM (' . (string)$this->fluent . ') master'
+		)->fetch();
+		return $result;
+	}
+
+    /**
      * @return array
      */
     public function getData()
