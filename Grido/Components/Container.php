@@ -88,6 +88,20 @@ abstract class Container extends \Nette\Application\UI\Control
         return $this->getComponent(Export::ID, $need);
     }
 
+    /**
+     * Returns aggregated values.
+     * @return array
+     */
+    public function getAggregates()
+    {
+        if ($this->aggregates === NULL) {
+            $container = $this->getComponent(Column::ID, FALSE);
+            $this->aggregates = $this->model->getAggregates($container->getComponents());
+        }
+
+        return $this->aggregates;
+    }
+
     /**********************************************************************************************/
 
     /**
@@ -179,17 +193,26 @@ abstract class Container extends \Nette\Application\UI\Control
     }
 
     /**
-     * Returns aggregated values.
-     * @return array
+     * @param bool $useCache
+     * @return bool
+     * @internal
      */
-    public function getAggregates()
+    public function hasAggregateFunctions($useCache = TRUE)
     {
-        if ($this->aggregates === NULL) {
+        $hasAggregateFunctions = $this->hasAggregateFunctions;
+
+        if ($hasAggregateFunctions === NULL || $useCache === FALSE) {
             $container = $this->getComponent(Column::ID, FALSE);
-            $this->aggregates = $this->model->getAggregates($container->getComponents());
+            foreach ($container->getComponents() as $column) {
+				if ($column->aggregateFunction !== NULL) {
+					$hasAggregateFunctions = TRUE;
+					break;
+				}
+			}
+            $this->hasAggregateFunctions = $useCache ? $hasAggregateFunctions : NULL;
         }
 
-        return $this->aggregates;
+        return $hasAggregateFunctions;
     }
 
     /**********************************************************************************************/
