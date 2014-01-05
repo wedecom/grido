@@ -43,8 +43,9 @@
         }
         {if $icon = $action->getOption('icon')}
         {?
-            $element->setText(' ' . $action->getLabel());
-            $element->insert(0, \Nette\Utils\Html::el('i')->setClass(array("glyphicon glyphicon-$icon icon-$icon")));
+            $element->setText('');
+            $element->insert(0, \Nette\Utils\Html::el('span')->setText(' ' . $action->getLabel()));
+            $element->insert(0, \Nette\Utils\Html::el('i')->setClass(array("fa fa-$icon")));
         }
         {/if}
     {/foreach}
@@ -127,9 +128,9 @@
                 </span>
                 <span n:if="$paginator->steps && $paginator->pageCount > 1" n:block="paginator" class="paginator">
                     {if $control->page == 1}
-                        <span class="btn btn-default btn-xs btn-mini disabled" n:href="page! page => $paginator->getPage() - 1"><i class="glyphicon glyphicon-arrow-left icon-arrow-left"></i> {_'Previous'}</span>
+                        <span class="btn btn-default btn-xs btn-mini disabled" n:href="page! page => $paginator->getPage() - 1"><i class="fa fa-angle-left"></i><span> {_'Previous'}</span></span>
                     {else}
-                        <a class="btn btn-default btn-xs btn-mini ajax" n:href="page! page => $paginator->getPage() - 1"><i class="glyphicon glyphicon-arrow-left icon-arrow-left"></i> {_'Previous'}</a>
+                        <a class="btn btn-default btn-xs btn-mini ajax" n:href="page! page => $paginator->getPage() - 1"><i class="fa fa-angle-left"></i><span> {_'Previous'}</span></a>
                     {/if}
                     {var $steps = $paginator->getSteps()}
                     {foreach $steps as $step}
@@ -142,9 +143,9 @@
                         {var $prevStep = $step}
                     {/foreach}
                     {if $control->page == $paginator->getPageCount()}
-                        <span class="btn btn-default btn-xs btn-mini disabled" n:href="page! page => $paginator->getPage() + 1">{_'Next'} <i class="glyphicon glyphicon-arrow-right icon-arrow-right"></i></span>
+                        <span class="btn btn-default btn-xs btn-mini disabled" n:href="page! page => $paginator->getPage() + 1"><span>{_'Next'} </span><i class="fa fa-angle-right"></i></span>
                     {else}
-                        <a class="btn btn-default btn-xs btn-mini ajax" n:href="page! page => $paginator->getPage() + 1">{_'Next'} <i class="glyphicon glyphicon-arrow-right icon-arrow-right"></i></a>
+                        <a class="btn btn-default btn-xs btn-mini ajax" n:href="page! page => $paginator->getPage() + 1"><span>{_'Next'} </span><i class="fa fa-angle-right"></i></a>
                     {/if}
                 </span>
                 <span n:block="count" class="count">
@@ -153,7 +154,7 @@
                     {formContainer buttons}
                         {input perPage, class => 'hide'}
                     {/formContainer}
-                    <a n:if="$control->hasExport()" class="btn btn-default btn-xs btn-mini" href="{=$control->getComponent(Grido\Components\Export::ID)->link('export!')}" title="{_'Export all items'}"><i class="glyphicon glyphicon-download icon-download"></i></a>
+                    <a n:if="$control->hasExport()" class="btn btn-default btn-xs btn-mini" href="{=$control->getComponent(Grido\Components\Export::ID)->link('export!')}" title="{_'Export all items'}"><i class="fa fa-download"></i></a>
                 </span>
             </td>
         </tr>
