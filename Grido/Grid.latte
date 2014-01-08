@@ -45,7 +45,7 @@
         {?
             $element->setText('');
             $element->insert(0, \Nette\Utils\Html::el('span')->setText(' ' . $action->getLabel()));
-            $element->insert(0, \Nette\Utils\Html::el('i')->setClass(array("fa fa-$icon")));
+            $element->insert(0, \Nette\Utils\Html::el('i')->setClass(array("fa fa-$icon icon-$icon")));
         }
         {/if}
     {/foreach}
