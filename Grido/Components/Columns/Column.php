@@ -399,6 +399,14 @@ abstract class Column extends \Grido\Components\Component
     }
 
     /**
+     * @return \Grido\Components\Filters\DateRange
+     */
+    public function setFilterDateRange()
+    {
+        return $this->grid->addFilterDateRange($this->getName(), $this->label);
+    }
+
+    /**
      * @return \Grido\Components\Filters\Check
      */
     public function setFilterCheck()
