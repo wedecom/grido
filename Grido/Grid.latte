@@ -9,8 +9,9 @@
 
 {snippet grid}
 {?
+    $ajaxClass = $isAjax ? 'ajax' : '';
     $form = $control->getComponent('form');
-    $form->getElementPrototype()->class[] = 'ajax grido';
+    $form->getElementPrototype()->class[] = 'grido ' . $ajaxClass;
 
     $operation = $control->hasOperation();
     $actions = $control->hasActions() ? $control->getComponent(\Grido\Components\Actions\Action::ID)->getComponents() : array();
@@ -83,9 +84,9 @@
             {foreach $columns as $column}
                 {!$column->getHeaderPrototype()->startTag()}
                     {if $column->isSortable()}
-                        <a n:if="!$column->getSort()" n:href="sort! [$column->getName() => Grido\Components\Columns\Column::ORDER_ASC]" class="ajax">{_$column->getLabel()}</a>
-                        <a n:if="$column->getSort() == Grido\Components\Columns\Column::ORDER_ASC" n:href="sort! [$column->getName() => Grido\Components\Columns\Column::ORDER_DESC]" class="sort ajax">{_$column->getLabel()}</a>
-                        <a n:if="$column->getSort() == Grido\Components\Columns\Column::ORDER_DESC" n:href="sort! [$column->getName() => Grido\Components\Columns\Column::ORDER_ASC]" class="sort ajax">{_$column->getLabel()}</a>
+                        <a n:if="!$column->getSort()" n:href="sort! [$column->getName() => Grido\Components\Columns\Column::ORDER_ASC]" class="{$ajaxClass}">{_$column->getLabel()}</a>
+                        <a n:if="$column->getSort() == Grido\Components\Columns\Column::ORDER_ASC" n:href="sort! [$column->getName() => Grido\Components\Columns\Column::ORDER_DESC]" class="sort {$ajaxClass}">{_$column->getLabel()}</a>
+                        <a n:if="$column->getSort() == Grido\Components\Columns\Column::ORDER_DESC" n:href="sort! [$column->getName() => Grido\Components\Columns\Column::ORDER_ASC]" class="sort {$ajaxClass}">{_$column->getLabel()}</a>
                         <span></span>
                     {else}
                         {_$column->getLabel()}
@@ -129,14 +130,14 @@
                     {if $control->page == 1}
                         <span class="btn btn-default btn-xs btn-mini disabled" n:href="page! page => $paginator->getPage() - 1"><i class="glyphicon glyphicon-arrow-left icon-arrow-left"></i> {_'Previous'}</span>
                     {else}
-                        <a class="btn btn-default btn-xs btn-mini ajax" n:href="page! page => $paginator->getPage() - 1"><i class="glyphicon glyphicon-arrow-left icon-arrow-left"></i> {_'Previous'}</a>
+                        <a class="btn btn-default btn-xs btn-mini {$ajaxClass}" n:href="page! page => $paginator->getPage() - 1"><i class="glyphicon glyphicon-arrow-left icon-arrow-left"></i> {_'Previous'}</a>
                     {/if}
                     {var $steps = $paginator->getSteps()}
                     {foreach $steps as $step}
                         {if $step == $control->page}
                             <span class="btn btn-default btn-xs btn-mini disabled">{$step}</span>
                         {else}
-                            <a class="btn btn-default btn-xs btn-mini ajax" n:href="page! page => $step">{$step}</a>
+                            <a class="btn btn-default btn-xs btn-mini {$ajaxClass}" n:href="page! page => $step">{$step}</a>
                         {/if}
                         <a n:if="$iterator->nextValue > $step + 1" class="prompt" data-grido-prompt="{_'Enter page:'}" data-grido-link="{link page! page => 0}">...</a>
                         {var $prevStep = $step}
@@ -144,7 +145,7 @@
                     {if $control->page == $paginator->getPageCount()}
                         <span class="btn btn-default btn-xs btn-mini disabled" n:href="page! page => $paginator->getPage() + 1">{_'Next'} <i class="glyphicon glyphicon-arrow-right icon-arrow-right"></i></span>
                     {else}
-                        <a class="btn btn-default btn-xs btn-mini ajax" n:href="page! page => $paginator->getPage() + 1">{_'Next'} <i class="glyphicon glyphicon-arrow-right icon-arrow-right"></i></a>
+                        <a class="btn btn-default btn-xs btn-mini {$ajaxClass}" n:href="page! page => $paginator->getPage() + 1">{_'Next'} <i class="glyphicon glyphicon-arrow-right icon-arrow-right"></i></a>
                     {/if}
                 </span>
                 <span n:block="count" class="count">

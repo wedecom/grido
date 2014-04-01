@@ -109,6 +109,9 @@ class Grid extends Components\Container
     /** @var PropertyAccessors\IPropertyAccessor */
     protected $propertyAccessor;
 
+    protected $isAjax = TRUE;
+
+
     /**
      * Sets a model that implements the interface Grido\DataSources\IDataSource or data-source object.
      * @param mixed $model
@@ -296,6 +299,11 @@ class Grid extends Components\Container
     {
         $this->getTablePrototype()->data['grido-options'] = json_encode($options);
         return $this;
+    }
+
+    public function setAjax($isAjax = TRUE)
+    {
+        $this->isAjax = $isAjax;
     }
 
     /**********************************************************************************************/
@@ -701,6 +709,7 @@ class Grid extends Components\Container
 
         $this->template->paginator = $this->paginator;
         $this->template->data = $data;
+        $this->template->isAjax = $this->isAjax;
 
         if ($this->onRender) {
             $this->onRender($this);
