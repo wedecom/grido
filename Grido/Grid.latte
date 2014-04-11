@@ -198,8 +198,11 @@
 		<tr n:if="$control->getCount() && $showAggregates" class="aggregates">
 		{? $aggregates = $control->getAggregates(); }
 		{foreach $columns as $column}
-			<td>{if isset($aggregates[$column->column])}{$column->renderAggregate($aggregates)|noescape}{else}-{/if}</td>
-		{/foreach}
+            {?$td = $column->getCellPrototype($row)}
+            {$td->startTag()|noescape}
+		         {if isset($aggregates[$column->column])}{$column->renderAggregate($aggregates)|noescape}{else}-{/if}
+            {$td->endTag()|noescape}
+    		{/foreach}
 		</tr>
         <tr n:if="!$control->getCount()"><td colspan="{=$showActionsColumn ? $columnCount + 1 : $columnCount}" class="no-results">{_'No results.'}</td></tr>
     </tbody>
