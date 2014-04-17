@@ -196,6 +196,7 @@
             {$tr->endTag()|noescape}
         {/foreach}
 		<tr n:if="$control->getCount() && $showAggregates" class="aggregates">
+			 <td n:if="$operation">&nbsp;</td>
 		{? $aggregates = $control->getAggregates(); }
 		{foreach $columns as $column}
             {?$td = $column->getCellPrototype($row)}
