@@ -173,7 +173,9 @@
             }
             {$tr->startTag()|noescape}
                 <td n:if="$checkbox" class="checker">
-                    {$checkbox->getControl()}
+                    {if empty($row['nooperation'])}
+                        {$checkbox->getControl()}
+                    {/if}
                 </td>
                 {foreach $columns as $column}
                     {?$td = $column->getCellPrototype($row)}
