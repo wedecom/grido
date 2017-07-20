@@ -86,35 +86,57 @@ class DibiFluent extends \Nette\Object implements IDataSource
 
     /*********************************** interface IDataSource ************************************/
 
+
+    private function modifyFluentSelect($columns)
+	{
+        $fluent = clone $this->fluent;
+        $reflection = new \ReflectionObject($fluent);
+        $property = $reflection->getProperty('clauses');
+        $property->setAccessible(TRUE);
+        $clauses = $property->getValue($fluent);
+        $clauses['SELECT'] = [implode(', ', $columns)];
+        $clauses['ORDER BY'] = NULL;
+        $property->setValue($fluent, $clauses);
+        return $fluent;
+	}
+
+
     /**
      * @return int
      */
     public function getCount()
     {
-        $fluent = clone $this->fluent;
-        return $fluent->count();
+    	$fluent = $this->modifyFluentSelect(['Count(*)']);
+		$result = $fluent->fetchAll();
+		if (count($result) == 1) {
+			$x = reset($result[0]);
+			return $x;
+		} else {
+			return FALSE;
+		}
     }
 
     /**
     * Gets aggregated values.
     *
     * @param array $columns
-    * @return array
+    * @return array|bool
     */
 	public function getAggregates($columns)
 	{
-		$fluent = clone($this->fluent);
 		$functions = array();
 		foreach ($columns as $column) {
 			if ($column->aggregateFunction !== NULL) {
 				$functions[] = $column->aggregateFunction . '(' . $column->column . ') AS ' . $column->column;
 			}
 		}
-//		echo('SELECT ' . implode(', ', $functions) . ' FROM (' . (string)$this->fluent . ')');
-		$result = (array)$fluent->getConnection()->query(
-			'SELECT ' . implode(', ', $functions) . ' FROM (' . (string)$this->fluent . ') master'
-		)->fetch();
-		return $result;
+		$fluent = $this->modifyFluentSelect($functions);
+		$result = $fluent->fetchAll();
+		if (count($result) == 1) {
+			return $result[0];
+		} else {
+			return FALSE;
+		}
 	}
 
     /**

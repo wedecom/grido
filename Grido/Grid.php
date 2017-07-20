@@ -812,7 +812,9 @@ class Grid extends Components\Container
         }
 
         $this['form']['count']->setValue($perPage);
-        $this->model->limit($paginator->getOffset(), $paginator->getLength());
+        if (!empty($this->count) && $this->count > $this->getPerPage()) {
+			$this->model->limit($paginator->getOffset(), $paginator->getLength());
+		}
     }
 
     protected function createComponentForm($name)
