@@ -103,6 +103,9 @@ class Grid extends Components\Container
     /** @var Paginator */
     protected $paginator;
 
+    /** @var bool */
+    protected $enablePaginator = TRUE;
+
     /** @var \Nette\Localization\ITranslator */
     protected $translator;
 
@@ -245,6 +248,12 @@ class Grid extends Components\Container
         return $this;
     }
 
+
+    public function disablePaginator()
+	{
+		$this->enablePaginator = FALSE;
+	}
+
     /**
      * Sets grid primary key.
      * Defaults is "id".
@@ -314,7 +323,9 @@ class Grid extends Components\Container
      */
     public function getCount()
     {
-        if ($this->count === NULL) {
+    	if (empty($this->paginator)) {
+    		return count($this->data);
+		} elseif ($this->count === NULL) {
             $this->count = $this->model->getCount();
         }
 
@@ -417,8 +428,11 @@ class Grid extends Components\Container
      * @throws \Exception
      * @return array
      */
-    public function getData($applyPaging = TRUE, $useCache = TRUE)
+    public function getData($applyPaging = NULL, $useCache = TRUE)
     {
+    	if ($applyPaging === NULL) {
+    		$applyPaging = $this->enablePaginator;
+		}
         if ($this->model === NULL) {
             throw new \Exception('Model cannot be empty, please use method $grid->setModel().');
         }
@@ -543,6 +557,9 @@ class Grid extends Components\Container
      */
     public function getPaginator()
     {
+    	if (!$this->enablePaginator) {
+    		throw new \Exception('Paginator disabled');
+		}
         if ($this->paginator === NULL) {
             $this->paginator = new Paginator;
             $this->paginator->setItemsPerPage($this->getPerPage())
@@ -709,7 +726,9 @@ class Grid extends Components\Container
         $this->saveRememberState();
         $data = $this->getData();
 
-        $this->template->paginator = $this->paginator;
+        if ($this->enablePaginator) {
+			$this->template->paginator = $this->paginator;
+		}
         $this->template->data = $data;
         $this->template->isAjax = $this->isAjax;
 
@@ -831,8 +850,10 @@ class Grid extends Components\Container
         $buttons->addSubmit('perPage', 'Items per page')
             ->onClick[] = $this->handlePerPage;
 
-        $form->addSelect('count', 'Count', $this->getItemsForCountSelect())
-            ->controlPrototype->attrs['title'] = $this->getTranslator()->translate('Items per page');
+        if ($this->enablePaginator) {
+			$form->addSelect('count', 'Count', $this->getItemsForCountSelect())
+				->controlPrototype->attrs['title'] = $this->getTranslator()->translate('Items per page');
+		}
     }
 
     /**

@@ -30,7 +30,9 @@
     $buttons->getComponent('search')->getControlPrototype()->class[] = 'btn btn-default btn-sm search';
     $buttons->getComponent('reset')->getControlPrototype()->class[] = 'btn btn-default btn-sm reset';
 
-    $form['count']->controlPrototype->class[] = 'form-control';
+    if (!empty($form['count'])) {
+        $form['count']->controlPrototype->class[] = 'form-control';
+    }
     $operation ? $form['operations']['operations']->controlPrototype->class[] = 'form-control' : NULL}
 
     {foreach $filters as $filter}
@@ -127,7 +129,7 @@
                     {?$form[Grido\Grid::BUTTONS][Grido\Components\Operation::ID]->controlPrototype->class[] = 'hide'}
                     {$form[Grido\Grid::BUTTONS][Grido\Components\Operation::ID]->control}
                 </span>
-                <span n:if="$paginator->steps && $paginator->pageCount > 1" n:block="paginator" class="paginator">
+                <span n:if="!empty($paginator) && $paginator->steps && $paginator->pageCount > 1" n:block="paginator" class="paginator">
                     {if $control->page == 1}
                         <span class="btn btn-default btn-xs btn-mini disabled" n:href="page! page => $paginator->getPage() - 1"><i class="fa fa-angle-left"></i><span> {_'Previous'}</span></span>
                     {else}
@@ -150,11 +152,15 @@
                     {/if}
                 </span>
                 <span n:block="count" class="count">
-                    {= sprintf($template->translate('Items %d - %d of %d'), $paginator->getCountBegin(), $paginator->getCountEnd(), $control->getCount())}
-                    {input count}
-                    {formContainer buttons}
-                        {input perPage, class => 'hide'}
-                    {/formContainer}
+                    {if !empty($paginator)}
+                        {= sprintf($template->translate('Items %d - %d of %d'), $paginator->getCountBegin(), $paginator->getCountEnd(), $control->getCount())}
+                        {input count}
+                        {formContainer buttons}
+                            {input perPage, class => 'hide'}
+                        {/formContainer}
+                    {else}
+                        <span style="line-height:2">{=count($data)} {!_"záznamů"}</span>
+                    {/if}
                     <a n:if="$control->hasExport()" class="btn btn-default btn-xs btn-mini" href="{=$control->getComponent(Grido\Components\Export::ID)->link('export!')}" title="{_'Export all items'}"><i class="fa fa-download"></i></a>
                 </span>
             </td>
