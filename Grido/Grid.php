@@ -453,7 +453,7 @@ class Grid extends Components\Container
             }
 
             if ($applyPaging && $data && !in_array($this->page, range(1, $this->getPaginator()->pageCount))) {
-                trigger_error("Page is out of range.", E_USER_NOTICE);
+//                trigger_error("Page is out of range.", E_USER_NOTICE);
                 $this->page = 1;
             }
 
@@ -826,7 +826,7 @@ class Grid extends Components\Container
 
         $perPage = $this->getPerPage();
         if ($perPage !== NULL && !in_array($perPage, $this->perPageList)) {
-            trigger_error("The number '$perPage' of items per page is out of range.", E_USER_NOTICE);
+//            trigger_error("The number '$perPage' of items per page is out of range.", E_USER_NOTICE);
             $perPage = $this->defaultPerPage;
         }
 

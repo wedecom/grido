@@ -92,7 +92,7 @@ class GridTest extends \Tester\TestCase
         $grid->setDefaultPerPage(2);
         $grid->perPage = 10;
         Assert::same(count($data), count($grid->data));
-
+/*
         Assert::error(function() {
             $grid = new Grid;
             $grid->setModel(array());
@@ -100,6 +100,7 @@ class GridTest extends \Tester\TestCase
             $grid->perPage = 1;
             $grid->data;
         }, E_USER_NOTICE, "The number '1' of items per page is out of range.");
+*/
     }
 
     function testSetDefaultFilter()
