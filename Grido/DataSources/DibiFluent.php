@@ -173,7 +173,7 @@ class DibiFluent extends \Nette\Object implements IDataSource
     public function sort(array $sorting)
     {
         foreach ($sorting as $column => $sort) {
-            $this->fluent->orderBy($column, $sort);
+            $this->fluent->orderBy($column, $sort . ' NULLS LAST');
         }
     }
 
