@@ -33,7 +33,7 @@
     "require-dev": {
         "nette/tester": "@dev",
         "mockery/mockery": "@dev",
-        "dibi/dibi": "@dev",
+        "dibi/dibi": "^3.0",
         "nella/doctrine": "@dev"
     }
 }
